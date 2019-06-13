@@ -1,0 +1,29 @@
+#config_version=5
+
+hardware:
+  platform: fast
+  driverboards: fast
+
+fast:
+  ports: com12, com13
+  config_number_format: int
+  rgb_buffer: 10
+  hardware_led_fade_time: 65ms
+
+config:
+  - machine_config
+
+window:
+  width: 1366
+  height: 768
+  title: Mission Pinball Framework - Harry Potter Pinball
+  resizable: false
+  fullscreen: false
+  borderless: false
+  exit_on_escape: true
+  source_display: backbox
+
+displays:
+  backbox:
+    height: 480
+    width: 800

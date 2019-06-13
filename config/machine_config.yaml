@@ -1,0 +1,357 @@
+#config_version=5
+
+# mission pinball framework machine configuration file for brooks & dunn
+
+# ascii art headings generated from
+# http://patorjk.com/software/taag/#p=display&c=bash&f=Alligator&t=mission%0Apinball%0Aframework
+
+# instructions for this config file:
+# http://docs.missionpinball.org/en/latest/config/index.html
+
+# created by brian madden & gabe knuth
+
+#        ::::::::      :::       :::   :::   ::::::::::
+#      :+:    :+:   :+: :+:    :+:+: :+:+:  :+:
+#     +:+         +:+   +:+  +:+ +:+:+ +:+ +:+
+#    :#:        +#++:++#++: +#+  +:+  +#+ +#++:++#
+#   +#+   +#+# +#+     +#+ +#+       +#+ +#+
+#  #+#    #+# #+#     #+# #+#       #+# #+#
+#  ########  ###     ### ###       ### ##########
+
+#        ::::::::  :::::::::: ::::::::::: :::    ::: :::::::::
+#      :+:    :+: :+:            :+:     :+:    :+: :+:    :+:
+#     +:+        +:+            +:+     +:+    +:+ +:+    +:+
+#    +#++:++#++ +#++:++#       +#+     +#+    +:+ +#++:++#+
+#          +#+ +#+            +#+     +#+    +#+ +#+
+#  #+#    #+# #+#            #+#     #+#    #+# #+#
+#  ########  ##########     ###      ########  ###
+
+machine:
+  balls_installed: 4
+
+kivy_config:
+  graphics:
+    show_cursor: false
+
+virtual_platform_start_active_switches:
+  - s_trough1
+  - s_trough2
+  - s_trough3
+  - s_trough4
+
+mpf:
+  default_show_sync_ms: 500
+  default_led_hw_update_hz: 10
+
+game:
+  balls_per_game: 3
+  allow_start_with_loose_balls: true
+  max_players: 4
+
+sound_system:
+    master_volume: 1.0
+    tracks:
+       music:
+          simultaneous_sounds: 1
+          volume: .8
+       voice:
+          simultaneous_sounds: 1
+          volume: 1.0
+       sfx:
+          simultaneous_sounds: 8
+          volume: 1.0
+
+logging:
+  file:
+    event_manager: basic
+    device_manager: basic
+
+assets:
+    sounds:
+        default:
+            load: preload
+        music:
+            track: music
+        sfx:
+            track: sfx
+        voice:
+            track: voice
+    videos:
+        default:
+            load: on_demand
+
+config:
+  - display
+
+playfields:
+  playfield:
+    tags: default
+    enable_ball_search: true
+    ball_search_interval: 150ms
+
+#        ::::::::  :::       ::: ::::::::::: ::::::::::: ::::::::  :::    ::: :::::::::: ::::::::
+#      :+:    :+: :+:       :+:     :+:         :+:    :+:    :+: :+:    :+: :+:       :+:    :+:
+#     +:+        +:+       +:+     +:+         +:+    +:+        +:+    +:+ +:+       +:+
+#    +#++:++#++ +#+  +:+  +#+     +#+         +#+    +#+        +#++:++#++ +#++:++#  +#++:++#++
+#          +#+ +#+ +#+#+ +#+     +#+         +#+    +#+        +#+    +#+ +#+              +#+
+#  #+#    #+#  #+#+# #+#+#      #+#         #+#    #+#    #+# #+#    #+# #+#       #+#    #+#
+#  ########    ###   ###   ###########     ###     ########  ###    ### ########## ########
+
+switches:
+  # s_leftflipper:
+  #   number: 0
+  #   tags: left_flipper
+
+
+#        ::::::::   :::::::: ::::::::::: :::        ::::::::
+#      :+:    :+: :+:    :+:    :+:     :+:       :+:    :+:
+#     +:+        +:+    +:+    +:+     +:+       +:+
+#    +#+        +#+    +:+    +#+     +#+       +#++:++#++
+#   +#+        +#+    +#+    +#+     +#+              +#+
+#  #+#    #+# #+#    #+#    #+#     #+#       #+#    #+#
+#  ########   ######## ########### ########## ########
+
+coils:
+  # c_leftflippermain:
+  #   number: 0
+  #   pulse_ms: 60
+
+
+#        :::::::::: :::        ::::::::::: :::::::::  :::::::::  :::::::::: :::::::::   ::::::::
+#       :+:        :+:            :+:     :+:    :+: :+:    :+: :+:        :+:    :+: :+:    :+:
+#      +:+        +:+            +:+     +:+    +:+ +:+    +:+ +:+        +:+    +:+ +:+
+#     :#::+::#   +#+            +#+     +#++:++#+  +#++:++#+  +#++:++#   +#++:++#:  +#++:++#++
+#    +#+        +#+            +#+     +#+        +#+        +#+        +#+    +#+        +#+
+#   #+#        #+#            #+#     #+#        #+#        #+#        #+#    #+# #+#    #+#
+#  ###        ########## ########### ###        ###        ########## ###    ###  ########
+
+flippers:
+  # left_flipper:
+  #   main_coil: c_leftflippermain
+  #   hold_coil: c_leftflipperhold
+  #   activation_switch: s_leftflipper
+  #   enable_events: ball_starting #, weak_flippers_disabled
+  #   disable_events: mode_bonus_starting #, weak_flippers_enabled
+  #   use_eos: false
+
+
+#        :::::::::      :::     :::        :::
+#       :+:    :+:   :+: :+:   :+:        :+:
+#      +:+    +:+  +:+   +:+  +:+        +:+
+#     +#++:++#+  +#++:++#++: +#+        +#+
+#    +#+    +#+ +#+     +#+ +#+        +#+
+#   #+#    #+# #+#     #+# #+#        #+#
+#  #########  ###     ### ########## ##########
+
+#        :::::::::  :::::::::: :::     ::: ::::::::::: ::::::::  :::::::::: ::::::::
+#       :+:    :+: :+:        :+:     :+:     :+:    :+:    :+: :+:       :+:    :+:
+#      +:+    +:+ +:+        +:+     +:+     +:+    +:+        +:+       +:+
+#     +#+    +:+ +#++:++#   +#+     +:+     +#+    +#+        +#++:++#  +#++:++#++
+#    +#+    +#+ +#+         +#+   +#+      +#+    +#+        +#+              +#+
+#   #+#    #+# #+#          #+#+#+#       #+#    #+#    #+# #+#       #+#    #+#
+#  #########  ##########     ###     ########### ########  ########## ########
+
+ball_devices:
+  # bd_drain:
+  #   tags: drain
+  #   ball_switches: s_drain
+  #   eject_coil: c_draineject
+  #   eject_targets: bd_trough
+  #   eject_timeouts: 4s # was 1500ms. changed because fast multiball drains confused it into thinking an eject failed
+  #   debug: true
+  #   target_on_unexpected_ball: bd_trough
+  #   console_log: full
+  #   eject_coil_retry_pulse: 140
+  #   retries_before_increasing_pulse: 1
+
+
+#            :::     :::    ::: ::::::::::: ::::::::
+#         :+: :+:   :+:    :+:     :+:    :+:    :+:
+#       +:+   +:+  +:+    +:+     +:+    +:+    +:+
+#     +#++:++#++: +#+    +:+     +#+    +#+    +:+ +#++:++#++:++
+#    +#+     +#+ +#+    +#+     +#+    +#+    +#+
+#   #+#     #+# #+#    #+#     #+#    #+#    #+#
+#  ###     ###  ########      ###     ########
+
+#        :::::::::: ::::::::::: :::::::::  ::::::::::
+#       :+:            :+:     :+:    :+: :+:
+#      +:+            +:+     +:+    +:+ +:+
+#     :#::+::#       +#+     +#++:++#:  +#++:++#
+#    +#+            +#+     +#+    +#+ +#+
+#   #+#            #+#     #+#    #+# #+#
+#  ###        ########### ###    ### ##########
+
+#        ::::::::   :::::::: ::::::::::: :::        ::::::::
+#      :+:    :+: :+:    :+:    :+:     :+:       :+:    :+:
+#     +:+        +:+    +:+    +:+     +:+       +:+
+#    +#+        +#+    +:+    +#+     +#+       +#++:++#++
+#   +#+        +#+    +#+    +#+     +#+              +#+
+#  #+#    #+# #+#    #+#    #+#     #+#       #+#    #+#
+#  ########   ######## ########### ########## ########
+
+autofire_coils:
+  left_sling:
+    coil: c_leftsling
+    switch: s_leftsling
+    enable_events: ball_starting
+  right_sling:
+    coil: c_rightsling
+    switch: s_rightsling
+    enable_events: ball_starting
+  pop:
+    coil: c_pop
+    switch: s_pop
+    enable_events: ball_starting
+  kicking_target:
+    coil: c_kickingtarget
+    switch: s_kickingtarget
+    enable_events: ball_starting
+
+# probably add right ramp coil, too
+
+
+#        :::        :::::::::: :::::::::   ::::::::
+#       :+:        :+:        :+:    :+: :+:    :+:
+#      +:+        +:+        +:+    +:+ +:+
+#     +#+        +#++:++#   +#+    +:+ +#++:++#++
+#    +#+        +#+        +#+    +#+        +#+
+#   #+#        #+#        #+#    #+# #+#    #+#
+#  ########## ########## #########   ########
+
+leds:
+  # l_australia:
+  #   number: 1-0
+  #   tags: right
+  #   default_color: red
+
+
+#        ::::::::  :::    :::  ::::::::  :::       :::  ::::::::
+#      :+:    :+: :+:    :+: :+:    :+: :+:       :+: :+:    :+:
+#     +:+        +:+    +:+ +:+    +:+ +:+       +:+ +:+
+#    +#++:++#++ +#++:++#++ +#+    +:+ +#+  +:+  +#+ +#++:++#++
+#          +#+ +#+    +#+ +#+    +#+ +#+ +#+#+ +#+        +#+
+#  #+#    #+# #+#    #+# #+#    #+#  #+#+# #+#+#  #+#    #+#
+#  ########  ###    ###  ########    ###   ###    ########
+
+
+shows:
+    gi_on:
+    - duration: -1
+      leds:
+        gi: ff9027
+    flash_color:
+        - time: 0
+          leds:
+            (led):
+              color: (color)
+            (leds):
+              color: (color)
+        - time: 1
+          leds:
+            (led):
+              color: black
+            (leds):
+              color: black
+        - time: 2
+    flash:  #overwrite default so we can tune our machine-wide flashing in one place
+        - _overwrite: true
+        - duration: 250ms
+          leds:
+            (led):
+              color: on
+            (leds):
+              color: on
+        - duration: 250ms
+          leds:
+            (led):
+              color: black
+            (leds):
+              color: black
+
+show_player:
+  mode_attract_started:
+    gi_on:
+      leds: gi
+
+#            :::     :::    ::: ::::::::: ::::::::::: ::::::::::: ::::::::  :::::::::
+#         :+: :+:   :+:    :+: :+:    :+:    :+:         :+:    :+:    :+: :+:    :+:
+#       +:+   +:+  +:+    +:+ +:+    +:+    +:+         +:+    +:+    +:+ +:+    +:+
+#     +#++:++#++: +#+    +:+ +#+    +:+    +#+         +#+    +#+    +:+ +#++:++#:
+#    +#+     +#+ +#+    +#+ +#+    +#+    +#+         +#+    +#+    +#+ +#+    +#+
+#   #+#     #+# #+#    #+# #+#    #+#    #+#         #+#    #+#    #+# #+#    #+#
+#  ###     ###  ########  ######### ###########     ###     ########  ###    ###
+
+auditor:
+    save_events:
+        ball_ended
+        game_ended
+    audit:
+        shots
+        switches
+        events
+        player
+    events:
+        ball_search_begin
+        machine_init_phase_1
+        game_started
+        game_ended
+        machine_reset
+    player:
+        score
+    num_player_top_records: 10
+
+#        :::    ::: :::::::::: :::   ::: :::::::::   ::::::::      :::     :::::::::  :::::::::
+#       :+:   :+:  :+:        :+:   :+: :+:    :+: :+:    :+:   :+: :+:   :+:    :+: :+:    :+:
+#      +:+  +:+   +:+         +:+ +:+  +:+    +:+ +:+    +:+  +:+   +:+  +:+    +:+ +:+    +:+
+#     +#++:++    +#++:++#     +#++:   +#++:++#+  +#+    +:+ +#++:++#++: +#++:++#:  +#+    +:+
+#    +#+  +#+   +#+           +#+    +#+    +#+ +#+    +#+ +#+     +#+ +#+    +#+ +#+    +#+
+#   #+#   #+#  #+#           #+#    #+#    #+# #+#    #+# #+#     #+# #+#    #+# #+#    #+#
+#  ###    ### ##########    ###    #########   ########  ###     ### ###    ### #########
+
+keyboard:
+  s:
+    switch: s_start
+  p:
+    switch: s_plungerlane
+    toggle: true
+  z:
+    switch: s_leftflipper
+  o:
+    switch: s_rightflipper
+  l:
+    switch: s_launch
+  x:
+    switch: s_leftoutlane
+  c:
+    switch: s_leftinlane
+  ",":
+    switch: s_rightinlane
+  ".":
+    switch: s_rightoutlane
+  shift+t:
+    switch: s_tilt
+  v:
+    switch: s_leftsling
+  m:
+    switch: s_rightsling
+  h:
+    event: light_extra_ball
+
+
+#            :::     ::::    ::: :::::::::::   :::   :::       ::: ::::::::::: ::::::::::: ::::::::  ::::    :::  ::::::::
+#         :+: :+:   :+:+:   :+:     :+:      :+:+: :+:+:    :+: :+:   :+:         :+:    :+:    :+: :+:+:   :+: :+:    :+:
+#       +:+   +:+  :+:+:+  +:+     +:+     +:+ +:+:+ +:+  +:+   +:+  +:+         +:+    +:+    +:+ :+:+:+  +:+ +:+
+#     +#++:++#++: +#+ +:+ +#+     +#+     +#+  +:+  +#+ +#++:++#++: +#+         +#+    +#+    +:+ +#+ +:+ +#+ +#++:++#++
+#    +#+     +#+ +#+  +#+#+#     +#+     +#+       +#+ +#+     +#+ +#+         +#+    +#+    +#+ +#+  +#+#+#        +#+
+#   #+#     #+# #+#   #+#+#     #+#     #+#       #+# #+#     #+# #+#         #+#    #+#    #+# #+#   #+#+# #+#    #+#
+#  ###     ### ###    #### ########### ###       ### ###     ### ###     ########### ########  ###    ####  ########       
+
+animations:
+  fade_in:
+    property: opacity
+    value: 1
+    duration: 400ms
+  fade_out:
+    property: opacity
+    value: 0
+    duration: 400ms
