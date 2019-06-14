@@ -41,7 +41,7 @@ virtual_platform_start_active_switches:
 
 mpf:
   default_show_sync_ms: 500
-  default_led_hw_update_hz: 10
+  default_light_hw_update_hz: 10
 
 game:
   balls_per_game: 3
@@ -115,7 +115,7 @@ switches:
     tags: upper_left_flipper, flipper
   s_left_vuk:
     number: 4
-    tags: playfield_active, end_skill_shot
+    tags: end_skill_shot
   s_left_outlane:
     number: 5
     tags: playfield_active, end_skill_shot
@@ -124,7 +124,7 @@ switches:
     tags: playfield_active, end_skill_shot
   s_left_sling:
     number: 7
-    tags: playfield_active, end_skill_shot, toggle, beat
+    tags: end_skill_shot, toggle, beat
 
 # Board 1, 3208, Orange Common
   s_trough1:
@@ -175,10 +175,10 @@ switches:
 # Board 2, 1616, Blue Common
   s_right_sling:
     number: 32
-    tags: playfield_active, end_skill_shot, toggle, beat
+    tags: end_skill_shot, toggle, beat
   s_right_vuk:
     number: 33
-    tags: playfield_active, end_skill_shot
+    tags: end_skill_shot
   s_bottom_right_standup:
     number: 34
     tags: playfield_active, end_skill_shot, right_standups
@@ -187,13 +187,13 @@ switches:
     tags: playfield_active, end_skill_shot, right_standups
   s_kicking_target:
     number: 36
-    tags: playfield_active, end_skill_shot
+    tags: end_skill_shot
   s_rear_right_standup:
     number: 37
     tags: playfield_active, end_skill_shot, rear_standups
   s_pop:
     number: 38
-    tags: playfield_active, end_skill_shot, pop
+    tags: end_skill_shot, pop
   s_right_orbit:
     number: 39
     tags: playfield_active, end_skill_shot
@@ -327,6 +327,14 @@ coils:
     number: 28
     default_hold_power: .75
 
+dual_wound_coils:
+  dwc_left_ramp:
+    hold_coil: c_left_ramp_hold
+    main_coil: c_left_ramp_main
+  dwc_right_ramp:
+    hold_coil: c_right_ramp_hold
+    main_coil: c_right_ramp_main
+
 
 #        :::::::::: :::        ::::::::::: :::::::::  :::::::::  :::::::::: :::::::::   ::::::::
 #       :+:        :+:            :+:     :+:    :+: :+:    :+: :+:        :+:    :+: :+:    :+:
@@ -400,6 +408,9 @@ ball_devices:
     eject_coil: c_right_vuk
     eject_timeouts: 3s
 
+    # Since left and right wireforms can hold balls, I might need to set them
+    # up as ball_devices, too? I'll burn that bridge when I get to it.
+
 
 #            :::     :::    ::: ::::::::::: ::::::::
 #         :+: :+:   :+:    :+:     :+:    :+:    :+:
@@ -453,34 +464,53 @@ autofire_coils:
 #  ######### ###########     ###     ########## ###    ###    ###     ########## ###    ###  ########
 
 diverters:
-  right_ramp_main:
-    activation_coil: c_right_ramp_main
-    type: pulse
-    activation_switches: s_right_orbit
-    enable_events: ball_starting
-    disable_events: lower_right_ramp, ball_ended
-    deactivate_events: lower_right_ramp
-  right_ramp_hold:
-    activation_coil: c_right_ramp_hold
+  right_ramp:
+    activation_coil: dwc_right_ramp
     type: hold
     activation_switches: s_right_orbit
+    activate_events: raise_right_ramp
+    deactivate_events:
+      - lower_right_ramp
+      - s_right_orbit_inactive #can't add delay here? like s_blah_inactive|1s
     enable_events: ball_starting
-    disable_events: lower_right_ramp, ball_ended
-    deactivate_events: lower_right_ramp
-  left_ramp_main:
-    activation_coil: c_left_ramp_main
-    type: pulse
-    activate_events: raise_left_ramp
-    enable_events: ball_starting
-    disable_events: lower_left_ramp, ball_ended
-    deactivate_events: lower_left_ramp
-  left_ramp_hold:
-    activation_coil: c_left_ramp_hold
+    disable_events: ball_ended
+
+  left_ramp:
+    activation_coil: dwc_left_ramp
     type: hold
     activate_events: raise_left_ramp
-    enable_events: ball_starting
-    disable_events: lower_left_ramp, ball_ended
     deactivate_events: lower_left_ramp
+    enable_events: ball_starting
+    disable_events: ball_ended
+
+  # right_ramp_main:
+  #   activation_coil: c_right_ramp_main
+  #   type: pulse
+  #   activation_switches: s_right_orbit
+  #   enable_events: ball_starting
+  #   disable_events: lower_right_ramp, ball_ended
+  #   deactivate_events: lower_right_ramp
+  # right_ramp_hold:
+  #   activation_coil: c_right_ramp_hold
+  #   type: hold
+  #   activation_switches: s_right_orbit
+  #   enable_events: ball_starting
+  #   disable_events: lower_right_ramp, ball_ended
+  #   deactivate_events: lower_right_ramp
+  # left_ramp_main:
+  #   activation_coil: c_left_ramp_main
+  #   type: pulse
+  #   activate_events: raise_left_ramp
+  #   enable_events: ball_starting
+  #   disable_events: lower_left_ramp, ball_ended
+  #   deactivate_events: lower_left_ramp
+  # left_ramp_hold:
+  #   activation_coil: c_left_ramp_hold
+  #   type: hold
+  #   activate_events: raise_left_ramp
+  #   enable_events: ball_starting
+  #   disable_events: lower_left_ramp, ball_ended
+  #   deactivate_events: lower_left_ramp
 
 
 #          :::   :::       :::      ::::::::  ::::    ::: :::::::::: ::::::::::: ::::::::
@@ -516,649 +546,840 @@ lights:
 # Inserts
   l_0-0:
     number: 0-0
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-1:
     number: 0-1
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-2:
     number: 0-2
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-3:
     number: 0-3
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-4:
     number: 0-4
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-5:
     number: 0-5
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-6:
     number: 0-6
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-7:
     number: 0-7
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-8:
     number: 0-8
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-9:
     number: 0-9
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-10:
     number: 0-10
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-11:
     number: 0-11
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-12:
     number: 0-12
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-13:
     number: 0-13
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-14:
     number: 0-14
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-15:
     number: 0-15
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-16:
     number: 0-16
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-17:
     number: 0-17
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-18:
     number: 0-18
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-19:
     number: 0-19
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-20:
     number: 0-20
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-21:
     number: 0-21
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-22:
     number: 0-22
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-23:
     number: 0-23
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-24:
     number: 0-24
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-25:
     number: 0-25
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-26:
     number: 0-26
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-27:
     number: 0-27
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-28:
     number: 0-28
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-29:
     number: 0-29
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-30:
     number: 0-30
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-31:
     number: 0-31
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-32:
     number: 0-32
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-33:
     number: 0-33
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-34:
     number: 0-34
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-35:
     number: 0-35
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-36:
     number: 0-36
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-37:
     number: 0-37
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-38:
     number: 0-38
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-39:
     number: 0-39
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-40:
     number: 0-40
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-41:
     number: 0-41
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-42:
     number: 0-42
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-43:
     number: 0-43
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-44:
     number: 0-44
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-45:
     number: 0-45
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-46:
     number: 0-46
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-47:
     number: 0-47
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-48:
     number: 0-48
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-49:
     number: 0-49
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-50:
     number: 0-50
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-51:
     number: 0-51
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-52:
     number: 0-52
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-53:
     number: 0-53
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-54:
     number: 0-54
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-55:
     number: 0-55
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-56:
     number: 0-56
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-57:
     number: 0-57
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-58:
     number: 0-58
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-59:
     number: 0-59
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-60:
     number: 0-60
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-61:
     number: 0-61
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-62:
     number: 0-62
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_0-63:
     number: 0-63
-    default_color: white
+    default_on_color: white
+    type: rgb
 
 # Voldemort
   l_1-0:
     number: 1-0
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-1:
     number: 1-1
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-2:
     number: 1-2
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-3:
     number: 1-3
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-4:
     number: 1-4
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-5:
     number: 1-5
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-6:
     number: 1-6
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-7:
     number: 1-7
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-8:
     number: 1-8
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-9:
     number: 1-9
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-10:
     number: 1-10
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-11:
     number: 1-11
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-12:
     number: 1-12
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-13:
     number: 1-13
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-14:
     number: 1-14
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-15:
     number: 1-15
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-16:
     number: 1-16
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-17:
     number: 1-17
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-18:
     number: 1-18
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-19:
     number: 1-19
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-20:
     number: 1-20
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-21:
     number: 1-21
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-22:
     number: 1-22
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-23:
     number: 1-23
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-24:
     number: 1-24
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-25:
     number: 1-25
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-26:
     number: 1-26
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-27:
     number: 1-27
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-28:
     number: 1-28
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-29:
     number: 1-29
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-30:
     number: 1-30
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-31:
     number: 1-31
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-32:
     number: 1-32
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-33:
     number: 1-33
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-34:
     number: 1-34
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-35:
     number: 1-35
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-36:
     number: 1-36
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-37:
     number: 1-37
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-38:
     number: 1-38
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-39:
     number: 1-39
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-40:
     number: 1-40
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-41:
     number: 1-41
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-42:
     number: 1-42
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-43:
     number: 1-43
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-44:
     number: 1-44
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-45:
     number: 1-45
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-46:
     number: 1-46
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-47:
     number: 1-47
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-48:
     number: 1-48
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-49:
     number: 1-49
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-50:
     number: 1-50
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-51:
     number: 1-51
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-52:
     number: 1-52
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-53:
     number: 1-53
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-54:
     number: 1-54
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-55:
     number: 1-55
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-56:
     number: 1-56
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-57:
     number: 1-57
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-58:
     number: 1-58
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-59:
     number: 1-59
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-60:
     number: 1-60
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-61:
     number: 1-61
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-62:
     number: 1-62
-    default_color: white
+    default_on_color: white
+    type: rgb
   l_1-63:
     number: 1-63
-    default_color: white
+    default_on_color: white
+    type: rgb
 
 # GI
   l_2-0:
     number: 2-0
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-1:
     number: 2-1
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-2:
     number: 2-2
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-3:
     number: 2-3
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-4:
     number: 2-4
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-5:
     number: 2-5
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-6:
     number: 2-6
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-7:
     number: 2-7
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-8:
     number: 2-8
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-9:
     number: 2-9
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-10:
     number: 2-10
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-11:
     number: 2-11
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-12:
     number: 2-12
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-13:
     number: 2-13
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-14:
     number: 2-14
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-15:
     number: 2-15
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-16:
     number: 2-16
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-17:
     number: 2-17
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-18:
     number: 2-18
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-19:
     number: 2-19
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-20:
     number: 2-20
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-21:
     number: 2-21
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-22:
     number: 2-22
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-23:
     number: 2-23
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-24:
     number: 2-24
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-25:
     number: 2-25
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-26:
     number: 2-26
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-27:
     number: 2-27
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-28:
     number: 2-28
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-29:
     number: 2-29
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-30:
     number: 2-30
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-31:
     number: 2-31
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-32:
     number: 2-32
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-33:
     number: 2-33
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-34:
     number: 2-34
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-35:
     number: 2-35
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-36:
     number: 2-36
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-37:
     number: 2-37
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-38:
     number: 2-38
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-39:
     number: 2-39
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-40:
     number: 2-40
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-41:
     number: 2-41
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-42:
     number: 2-42
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-43:
     number: 2-43
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-44:
     number: 2-44
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-45:
     number: 2-45
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-46:
     number: 2-46
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-47:
     number: 2-47
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-48:
     number: 2-48
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-49:
     number: 2-49
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-50:
     number: 2-50
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-51:
     number: 2-51
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-52:
     number: 2-52
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-53:
     number: 2-53
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-54:
     number: 2-54
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-55:
     number: 2-55
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-56:
     number: 2-56
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-57:
     number: 2-57
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-58:
     number: 2-58
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-59:
     number: 2-59
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-60:
     number: 2-60
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-61:
     number: 2-61
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-62:
     number: 2-62
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
   l_2-63:
     number: 2-63
-    default_color: white
+    default_on_color: white
+    type: grb
     tags: gi
-
 
 
 #        ::::::::  :::    :::  ::::::::  :::       :::  ::::::::
@@ -1169,45 +1390,51 @@ lights:
 #  #+#    #+# #+#    #+# #+#    #+#  #+#+# #+#+#  #+#    #+#
 #  ########  ###    ###  ########    ###   ###    ########
 
-
 shows:
-    gi_on:
-    - duration: -1
-      leds:
+  gi_on:
+    - time: 0
+      duration: -1
+      lights:
         gi: ff9027
-    flash_color:
-        - time: 0
-          leds:
-            (led):
-              color: (color)
-            (leds):
-              color: (color)
-        - time: 1
-          leds:
-            (led):
-              color: black
-            (leds):
-              color: black
-        - time: 2
-    flash:  #overwrite default so we can tune our machine-wide flashing in one place
-        - _overwrite: true
-        - duration: 250ms
-          leds:
-            (led):
-              color: on
-            (leds):
-              color: on
-        - duration: 250ms
-          leds:
-            (led):
-              color: black
-            (leds):
-              color: black
 
-show_player:
-  mode_attract_started:
-    gi_on:
-      leds: gi
+# shows:
+#     gi_on:
+#     - duration: -1
+#       lights:
+#         gi: ff9027
+    # flash_color:
+    #     - time: 0
+    #       lights:
+    #         (light):
+    #           color: (color)
+    #         (lights):
+    #           color: (color)
+    #     - time: 1
+    #       lights:
+    #         (light):
+    #           color: black
+    #         (lights):
+    #           color: black
+    #     - time: 2
+    # flash:  #overwrite default so we can tune our machine-wide flashing in one place
+    #     - _overwrite: true
+    #     - duration: 250ms
+    #       lights:
+    #         (light):
+    #           color: on
+    #         (lights):
+    #           color: on
+    #     - duration: 250ms
+    #       lights:
+    #         (light):
+    #           color: black
+    #         (lights):
+    #           color: black
+
+# show_player:
+#   mode_attract_started:
+#     gi_on:
+#       lights: gi
 
 #            :::     :::    ::: ::::::::: ::::::::::: ::::::::::: ::::::::  :::::::::
 #         :+: :+:   :+:    :+: :+:    :+:    :+:         :+:    :+:    :+: :+:    :+:
