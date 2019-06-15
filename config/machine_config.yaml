@@ -43,6 +43,10 @@ mpf:
   default_show_sync_ms: 500
   default_light_hw_update_hz: 10
 
+# Remove later. This is just to identify lights. Should make this an actual mode
+# but need a way to input names that are sent to a text file. Maybe mode w/ code?
+
+
 game:
   balls_per_game: 3
   allow_start_with_loose_balls: true
@@ -1478,27 +1482,27 @@ keyboard:
     switch: s_plungerlane
     toggle: true
   z:
-    switch: s_leftflipper
-  o:
-    switch: s_rightflipper
-  l:
-    switch: s_launch
+    switch: s_left_flipper
   x:
-    switch: s_leftoutlane
+    switch: s_right_flipper
+  # l:
+  #   switch: s_launch
+  o:
+    switch: s_left_outlane
   c:
-    switch: s_leftinlane
+    switch: s_left_inlane
   ",":
-    switch: s_rightinlane
+    switch: s_right_inlane
   ".":
-    switch: s_rightoutlane
+    switch: s_right_outlane
   shift+t:
     switch: s_tilt
   v:
-    switch: s_leftsling
+    switch: s_left_sling
   m:
-    switch: s_rightsling
-  h:
-    event: light_extra_ball
+    switch: s_right_sling
+  l:
+    event: start_light_test
 
 
 #            :::     ::::    ::: :::::::::::   :::   :::       ::: ::::::::::: ::::::::::: ::::::::  ::::    :::  ::::::::

@@ -1,5 +1,3 @@
 #config_version=5
-show_player:
-  mode_attract_started:
-    gi_on:
-      loops: 0
+mode:
+  code: attract.Attract
