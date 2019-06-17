@@ -69,6 +69,7 @@ logging:
   file:
     event_manager: basic
     device_manager: basic
+    switch_manager: basic
 
 assets:
     sounds:
