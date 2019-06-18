@@ -5,8 +5,8 @@ hardware:
   driverboards: fast
 
 fast:
-  ports: com12, com13
-  config_number_format: int
+  ports: /dev/tty.usbserial-00001014B, /dev/tty.usbserial-00001014C
+  #config_number_format: int
   rgb_buffer: 10
   hardware_led_fade_time: 65ms
 
